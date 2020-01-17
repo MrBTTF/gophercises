@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -50,28 +51,38 @@ func ReadProblemsFromFile(filename string) ([]Problem, error) {
 func StartQuiz(problems []Problem, timeoutChan chan bool, quizFinished chan int) {
 	var correctAnswers int
 
-	scanner := bufio.NewScanner(os.Stdin)
 	for _, p := range problems {
 		fmt.Printf("Question: %s\n", p.Question)
 		fmt.Println("Your answer: ")
-		scanner.Scan()
-		answer := scanner.Text()
+
+		answerChan := make(chan string)
+		go func() {
+			reader := bufio.NewReader(os.Stdin)
+			var answer string
+			for len(answer) == 0 {
+				select {
+				case <-timeoutChan:
+					fmt.Println("\nOops! Time is up")
+					quizFinished <- correctAnswers
+					return
+				default:
+				}
+				answer, _ = reader.ReadString('\n')
+			}
+			answerChan <- answer
+		}()
+		answer := <-answerChan
 		answer = strings.TrimSpace(answer)
 		if answer == p.Answer {
 			correctAnswers++
-		}
-		select {
-		case <-timeoutChan:
-			fmt.Println("Oops! Time is up")
-			quizFinished <- correctAnswers
-			return
-		default:
 		}
 	}
 	quizFinished <- correctAnswers
 }
 
 func main() {
+	fd := int(os.Stdin.Fd())
+
 	var problemsFile = flag.String("p", "problems.csv", "path to CSV file containing problems")
 	var timeout = flag.Int("t", 30, "total time to finish a quiz")
 	flag.Parse()
@@ -89,8 +100,10 @@ func main() {
 	scanner.Scan()
 
 	start := func() {
-		timeoutChan := make(chan bool, 1)
-		quizFinished := make(chan int, 1)
+		syscall.SetNonblock(fd, true)
+		defer syscall.SetNonblock(fd, false)
+		timeoutChan := make(chan bool)
+		quizFinished := make(chan int)
 		var correctAnswers int
 		go StartQuiz(problems, timeoutChan, quizFinished)
 		select {
