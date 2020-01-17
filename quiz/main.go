@@ -3,10 +3,13 @@ package main
 import (
 	"bufio"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	"strings"
+	"time"
 )
 
 type Problem struct {
@@ -44,41 +47,68 @@ func ReadProblemsFromFile(filename string) ([]Problem, error) {
 	return problems, nil
 }
 
-func StartQuiz(problems []Problem) {
+func StartQuiz(problems []Problem, timeoutChan chan bool, quizFinished chan int) {
 	var correctAnswers int
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for _, p := range problems {
 		fmt.Printf("Question: %s\n", p.Question)
-		fmt.Print("Your answer: ")
+		fmt.Println("Your answer: ")
 		scanner.Scan()
 		answer := scanner.Text()
+		answer = strings.TrimSpace(answer)
 		if answer == p.Answer {
 			correctAnswers++
 		}
+		select {
+		case <-timeoutChan:
+			fmt.Println("Oops! Time is up")
+			quizFinished <- correctAnswers
+			return
+		default:
+		}
 	}
-	fmt.Println("Finished!")
-	fmt.Printf("Correct answers: %d/%d\n", correctAnswers, len(problems))
+	quizFinished <- correctAnswers
 }
 
 func main() {
+	var problemsFile = flag.String("p", "problems.csv", "path to CSV file containing problems")
+	var timeout = flag.Int("t", 5, "total time to finish a quiz")
+	flag.Parse()
+
 	fmt.Println("Welcome to quiz!")
 	fmt.Println("..importing problems")
 
-	problems, err := ReadProblemsFromFile("problems.csv")
+	problems, err := ReadProblemsFromFile(*problemsFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	StartQuiz(problems)
-
 	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Print("Press enter to start")
+	scanner.Scan()
 
+	start := func() {
+		timeoutChan := make(chan bool, 1)
+		quizFinished := make(chan int, 1)
+		var correctAnswers int
+		go StartQuiz(problems, timeoutChan, quizFinished)
+		select {
+		case <-time.After(time.Duration(*timeout) * time.Second):
+			timeoutChan <- true
+			correctAnswers = <-quizFinished
+		case correctAnswers = <-quizFinished:
+		}
+
+		fmt.Println("Finished!")
+		fmt.Printf("Correct answers: %d/%d\n", correctAnswers, len(problems))
+	}
+	start()
 	fmt.Println("Try again? (y/n)")
 	for scanner.Scan() {
 		input := scanner.Text()
 		if input == "y" {
-			StartQuiz(problems)
+			start()
 		} else if input == "n" {
 			break
 		} else {
