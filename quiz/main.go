@@ -73,7 +73,7 @@ func StartQuiz(problems []Problem, timeoutChan chan bool, quizFinished chan int)
 
 func main() {
 	var problemsFile = flag.String("p", "problems.csv", "path to CSV file containing problems")
-	var timeout = flag.Int("t", 5, "total time to finish a quiz")
+	var timeout = flag.Int("t", 30, "total time to finish a quiz")
 	flag.Parse()
 
 	fmt.Println("Welcome to quiz!")
