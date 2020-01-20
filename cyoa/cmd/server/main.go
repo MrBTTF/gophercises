@@ -60,12 +60,16 @@ func LoadBook(filename string) (map[string]Arc, error) {
 }
 
 func main()  {
-	arcs, err := LoadBook("gopher.json")
+	fmt.Println("Choose Your Own Adventure server on port 8080")
+
+	arcs, err := LoadBook("assets/gopher.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	fmt.Println("arcs loaded successfully")
+
 	http.Handle("/",  NewArcHandler(arcs))
-	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("./css"))))
+	http.Handle("/css/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	http.ListenAndServe(":8080", nil)
 }
