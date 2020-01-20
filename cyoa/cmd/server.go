@@ -1,38 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path"
+
+	"g\/MrBTTF/gophercises/cyoa/cyoa"
 )
-
-type Option struct {
-	Text    string
-	NextArc string `json:"arc"`
-}
-
-type Arc struct {
-	Title   string
-	Story   []string
-	Options []Option
-}
-
-func LoadBook(filename string) (map[string]Arc, error) {
-	jsonData, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	var arcs map[string]Arc
-	json.Unmarshal(jsonData, &arcs)
-
-	return arcs, nil
-}
 
 func main() {
 	port, ok := os.LookupEnv("PORT")
@@ -41,7 +18,7 @@ func main() {
 	}
 	fmt.Printf("[INFO] \"Choose Your Own Adventure\" server is running on port %s\n", port)
 
-	arcs, err := LoadBook("assets/gopher.json")
+	arcs, err := cyoa.LoadBook("assets/gopher.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,7 +29,7 @@ func main() {
 	http.ListenAndServe(":"+port, nil)
 }
 
-func arcHandler(arcs map[string]Arc) http.HandlerFunc {
+func arcHandler(arcs map[string]cyoa.Arc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, arcName := path.Split(r.URL.Path)
 		arc, ok := arcs[arcName]
