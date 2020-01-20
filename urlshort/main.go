@@ -19,7 +19,7 @@ func main() {
 
 	// Build the YAMLHandler using the mapHandler as the
 	// fallback
-		yaml := `
+	yaml := `
 - path: /urlshort
   url: https://github.com/gophercises/urlshort
 - path: /urlshort-final

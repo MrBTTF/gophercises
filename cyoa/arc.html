@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>{{.Title}}</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="story">
+            <h1>{{.Title}}</h1>
+                {{range $line := .Story}} 
+                <p>{{$line}}</p>
+                {{end}}
+        </div>
+        {{with $options := .Options}}
+        <ul class="options">
+            {{range $option := $options}} 
+            <li>
+            <a href=/{{$option.NextArc}} class=link>{{$option.Text}}</a>
+            </li>
+            {{end}}
+        </ul>
+        {{else}}
+        <h2>The End</h2>
+        <a href=/intro class=link>Start again</a>
+        {{end}}
+    </div>
+</body>
+</html>
