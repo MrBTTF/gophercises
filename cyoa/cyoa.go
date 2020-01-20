@@ -1,4 +1,9 @@
-package github.com/MrBTTF/gophercises/cyoa
+package cyoa
+
+import (
+	"encoding/json"
+	"io/ioutil"
+)
 
 type Option struct {
 	Text    string

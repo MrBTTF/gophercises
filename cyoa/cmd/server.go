@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"g\/MrBTTF/gophercises/cyoa/cyoa"
+	"github.com/MrBTTF/gophercises/cyoa/"
 )
 
 func main() {
