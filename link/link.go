@@ -2,10 +2,10 @@ package link
 
 import (
 	"fmt"
+	"golang.org/x/net/html"
 	"io"
 	"log"
 	"strings"
-	"golang.org/x/net/html"
 )
 
 type Link struct {
@@ -52,6 +52,9 @@ func ParseLinks(r io.Reader) []Link {
 					url = attr.Val
 					break
 				}
+			}
+			if url == "" {
+				return
 			}
 			links = append(links, Link{
 				URL:  url,
