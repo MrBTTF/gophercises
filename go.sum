@@ -1,3 +1,8 @@
+github.com/MrBTTF/gophercises/link v0.0.0-20200308114302-437125bcc035/go.mod h1:feBWAx8R99jMOvne0Tiuy03sFMyZNZ8qe/ZG7ZhCgIA=
+github.com/MrBTTF/gophercises/link v0.0.0-20200308122903-a32a7a58ca8d h1:Lk/frUc3OowlAp9qo9A3XbCb9RErdWRv59wlWwyyTc0=
+github.com/MrBTTF/gophercises/link v0.0.0-20200308122903-a32a7a58ca8d/go.mod h1:feBWAx8R99jMOvne0Tiuy03sFMyZNZ8qe/ZG7ZhCgIA=
+github.com/MrBTTF/gophercises/sitemap v0.0.0-20200308122903-a32a7a58ca8d h1:/6kOMCae4ynsLkIOnkqLh1uHkskSVcSdCzxZtGWCW4k=
+github.com/MrBTTF/gophercises/sitemap v0.0.0-20200308122903-a32a7a58ca8d/go.mod h1:zhJ3J8DLBeXFUdEaR9VCx1AaF3rqt1pI1H4lKr6LFHM=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa h1:F+8P+gmewFQYRk6JoLQLwjBCTu3mcIURZfNkVweuRKA=
 golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
