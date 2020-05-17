@@ -101,6 +101,7 @@ func Jokers(n int) func([]Card) []Card {
 				Suit: Joker,
 			})
 		}
+
 		return cards
 	}
 }
